@@ -1,5 +1,6 @@
 import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Post } from 'src/graphql/post/entities/post.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -15,4 +16,8 @@ export class User {
     @Column({ select: false })
     @HideField()
     password: string;
+
+    @Field(() => [Post], { nullable: true })
+    @OneToMany(() => Post, (post) => post.user)
+    posts: Post[];
 }
