@@ -7,4 +7,7 @@ export class CreateUserInput {
     
     @Field()
     password: string;
+
+    @Field(() => Int, { nullable: true })
+    parentId?: number;
 }
