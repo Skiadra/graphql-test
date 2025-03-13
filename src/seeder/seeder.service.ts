@@ -21,16 +21,24 @@ export class SeederService {
 
     const user1 = this.userRepository.create({
       email: 'user1@example.com',
-      password: 'password1',
+      password: 'password',
     });
     await this.userRepository.save(user1);
 
     const user2 = this.userRepository.create({
       email: 'user2@example.com',
-      password: 'password2',
+      password: 'password',
       parent: user1,
     });
     await this.userRepository.save(user2);
+
+    const user3 = this.userRepository.create({
+      email: 'user3@example.com',
+      password: 'password',
+      parent: user2,
+    });
+    await this.userRepository.save(user3);
+
 
     const post1 = this.postRepository.create({
       title: 'First Post',

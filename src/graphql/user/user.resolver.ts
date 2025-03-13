@@ -22,7 +22,12 @@ export class UserResolver {
     }
 
     @ResolveField(() => [User], { nullable: true })
-    async parentChain(@Parent() user: User): Promise<User[]> {
+    async descendant(@Parent() user: User): Promise<User[]> {
+        return this.userService.getDescendantChain(user.id);
+    }
+
+    @ResolveField(() => [User], { nullable: true })
+    async ancestor(@Parent() user: User): Promise<User[]> {
         return this.userService.getParentChain(user.id);
     }
 }

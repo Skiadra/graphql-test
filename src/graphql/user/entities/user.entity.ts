@@ -1,6 +1,6 @@
 import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
 import { Post } from 'src/graphql/post/entities/post.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, BeforeInsert } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, BeforeInsert, JoinColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -23,8 +23,10 @@ export class User {
 
     @Field(() => User, { nullable: true })
     @ManyToOne(() => User, (user) => user.children, { nullable: true })
+    @JoinColumn({ name: 'parentId' })
     parent: User;
 
-    @OneToMany(() => User, (user) => user.parent)
+    @Field(() => [User], { nullable: true })
+    @OneToMany(() => User, (user) => user.parent, { nullable: true })
     children: User[];
 }
