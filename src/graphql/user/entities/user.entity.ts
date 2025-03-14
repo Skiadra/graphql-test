@@ -22,7 +22,7 @@ export class User {
     posts: Post[];
 
     @Field(() => User, { nullable: true })
-    @ManyToOne(() => User, (user) => user.children, { nullable: true })
+    @ManyToOne(() => User, (user) => user.children, { nullable: true, onDelete: 'SET NULL' })
     @JoinColumn({ name: 'parentId' })
     parent: User;
 

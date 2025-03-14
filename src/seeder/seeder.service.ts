@@ -24,21 +24,69 @@ export class SeederService {
       password: 'password',
     });
     await this.userRepository.save(user1);
-
+    
     const user2 = this.userRepository.create({
       email: 'user2@example.com',
       password: 'password',
       parent: user1,
     });
     await this.userRepository.save(user2);
-
+    
     const user3 = this.userRepository.create({
       email: 'user3@example.com',
       password: 'password',
       parent: user2,
     });
     await this.userRepository.save(user3);
-
+    
+    const user4 = this.userRepository.create({
+      email: 'user4@example.com',
+      password: 'password',
+      parent: user3,
+    });
+    await this.userRepository.save(user4);
+    
+    const user5 = this.userRepository.create({
+      email: 'user5@example.com',
+      password: 'password',
+      parent: user4,
+    });
+    await this.userRepository.save(user5);
+    
+    const user6 = this.userRepository.create({
+      email: 'user6@example.com',
+      password: 'password',
+      parent: user5,
+    });
+    await this.userRepository.save(user6);
+    
+    const user7 = this.userRepository.create({
+      email: 'user7@example.com',
+      password: 'password',
+      parent: user6,
+    });
+    await this.userRepository.save(user7);
+    
+    const user8 = this.userRepository.create({
+      email: 'user8@example.com',
+      password: 'password',
+      parent: user7,
+    });
+    await this.userRepository.save(user8);
+    
+    const user9 = this.userRepository.create({
+      email: 'user9@example.com',
+      password: 'password',
+      parent: user8,
+    });
+    await this.userRepository.save(user9);
+    
+    const user10 = this.userRepository.create({
+      email: 'user10@example.com',
+      password: 'password',
+      parent: user9,
+    });
+    await this.userRepository.save(user10);
 
     const post1 = this.postRepository.create({
       title: 'First Post',

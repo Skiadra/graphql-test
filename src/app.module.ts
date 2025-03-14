@@ -9,6 +9,9 @@ import { Post } from './graphql/post/entities/post.entity';
 import { config } from 'dotenv';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { PostModule } from './graphql/post/post.module';
+import * as depthLimit from 'graphql-depth-limit';
+import * as costAnalysis from 'graphql-cost-analysis';
+import { GraphQLError } from 'graphql';
 
 // Load environment variables early
 config();
@@ -20,6 +23,23 @@ config();
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      validationRules: [
+        depthLimit(5), // Dipakai untuk membatasi depth query (nesting)
+        (validationContext) =>
+          costAnalysis.default({
+            maximumCost: 1000,
+            defaultCost: 1,
+            variables: validationContext.getVariableUsages,
+            createError: (max, actual) =>
+              new Error(`Query cost is ${actual}, which exceeds the max cost of ${max}`),
+          }),
+      ],
+      formatError: (error: GraphQLError) => { // Format error message
+        return {
+          message: error.message,
+          code: error.extensions?.code || 'INTERNAL_SERVER_ERROR',
+        };
+      },
     }),
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',

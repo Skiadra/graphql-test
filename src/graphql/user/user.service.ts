@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
+import { FetchAllUsersArgs } from './dto/fetch-all-users.input';
 
 @Injectable()
 export class UserService {
@@ -28,8 +29,13 @@ export class UserService {
     return await this.repo.save(user);
   }
   
-  async findAll(): Promise<User[]> {
+  async findAll(args: FetchAllUsersArgs): Promise<User[]> {
+    const page = args.page ?? 1;
+    const limit = args.limit ?? 5;
+
     return await this.repo.find({
+      take: limit,
+      skip: ( page - 1 ) * limit,
       relations: this.allRelations,
     });
   }
@@ -41,7 +47,7 @@ export class UserService {
     });
   }
 
-  async getDescendantChain(userId: number): Promise<User[]> {
+  async getDescendant(userId: number): Promise<User[]> {
     const descendants = await this.repo.query(
       `WITH RECURSIVE descendants AS (
           SELECT * FROM user WHERE id = ? -- Start with the given user ID
@@ -56,15 +62,15 @@ export class UserService {
     return descendants;
   }
 
-  async getParentChain(userId: number): Promise<User[]> {
+  async getAncestor(userId: number): Promise<User[]> {
     const parents = await this.repo.query(
-      `WITH RECURSIVE parent_chain AS (
+      `WITH RECURSIVE ancestor AS (
           SELECT * FROM user WHERE id = ? -- Start with the given user
           UNION ALL
           SELECT u.* FROM user u
-          INNER JOIN parent_chain p ON u.id = p.parentId -- Recursive join
+          INNER JOIN ancestor a ON u.id = a.parentId -- Recursive join
       ) 
-      SELECT * FROM parent_chain WHERE id != ?;`,
+      SELECT * FROM ancestor WHERE id != ?;`,
       [userId, userId]
     );
    

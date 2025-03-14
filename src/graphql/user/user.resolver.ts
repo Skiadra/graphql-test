@@ -2,6 +2,7 @@ import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nes
 import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
+import { FetchAllUsersArgs } from './dto/fetch-all-users.input';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -12,8 +13,8 @@ export class UserResolver {
     }
 
     @Query(() => [User], { name: 'allUser' })
-    findAll() {
-        return this.userService.findAll();
+    async findAll(@Args() args: FetchAllUsersArgs): Promise<User[]> {
+        return this.userService.findAll(args)
     }
 
     @Query(() => User, { name: 'user' })
@@ -23,11 +24,11 @@ export class UserResolver {
 
     @ResolveField(() => [User], { nullable: true })
     async descendant(@Parent() user: User): Promise<User[]> {
-        return this.userService.getDescendantChain(user.id);
+        return this.userService.getDescendant(user.id);
     }
 
     @ResolveField(() => [User], { nullable: true })
     async ancestor(@Parent() user: User): Promise<User[]> {
-        return this.userService.getParentChain(user.id);
+        return this.userService.getAncestor(user.id);
     }
 }
