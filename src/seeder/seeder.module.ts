@@ -5,6 +5,7 @@ import { Post } from '../graphql/post/entities/post.entity';
 import { SeederService } from './seeder.service';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
+import { Comment } from 'src/graphql/comment/entities/comment.entity';
 
 config()
 
@@ -17,11 +18,12 @@ config()
         username: process.env.DATABASE_USER || 'root',
         password: process.env.DATABASE_PASSWORD || '123456',
         database: process.env.DATABASE_NAME || 'test-gql',
-        entities: [User, Post],
+        entities: [User, Post, Comment],
         synchronize: true,
+        dropSchema: process.env.CURRENT_ENV == 'dev' ? true : false,
         autoLoadEntities: true,
       }),
-    TypeOrmModule.forFeature([User, Post]),
+    TypeOrmModule.forFeature([User, Post, Comment]),
   ],
   providers: [SeederService],
 })

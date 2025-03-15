@@ -12,6 +12,8 @@ import { PostModule } from './graphql/post/post.module';
 import * as depthLimit from 'graphql-depth-limit';
 import * as costAnalysis from 'graphql-cost-analysis';
 import { GraphQLError } from 'graphql';
+import { CommentModule } from './graphql/comment/comment.module';
+import { Comment } from './graphql/comment/entities/comment.entity';
 
 // Load environment variables early
 config();
@@ -48,12 +50,13 @@ config();
       username: process.env.DATABASE_USER || 'root',
       password: process.env.DATABASE_PASSWORD || '123456',
       database: process.env.DATABASE_NAME || 'test-gql',
-      entities: [User, Post],
+      entities: [User, Post, Comment],
       synchronize: true,
       autoLoadEntities: true,
     }),
     UserModule,
     PostModule,
+    CommentModule,
   ],
 })
 export class AppModule {}

@@ -47,31 +47,35 @@ export class UserService {
     });
   }
 
-  async getDescendant(userId: number): Promise<User[]> {
+  // CTE For efficient recursive
+
+  async getDescendant(userId: number, limit: number): Promise<User[]> {
     const descendants = await this.repo.query(
       `WITH RECURSIVE descendants AS (
-          SELECT * FROM user WHERE id = ? -- Start with the given user ID
+          SELECT *, 1 AS level FROM user WHERE id = ? -- Start with the given user ID
           UNION ALL
-          SELECT u.* FROM user u
+          SELECT u.*, d.level + 1 FROM user u
           INNER JOIN descendants d ON u.parentId = d.id -- Recursive join
+          WHERE d.level < ?
       ) 
       SELECT * FROM descendants WHERE id != ?;`,
-      [userId, userId]
+      [userId, userId, limit]
     );
   
     return descendants;
   }
 
-  async getAncestor(userId: number): Promise<User[]> {
+  async getAncestor(userId: number, limit: number): Promise<User[]> {
     const parents = await this.repo.query(
       `WITH RECURSIVE ancestor AS (
-          SELECT * FROM user WHERE id = ? -- Start with the given user
+          SELECT *, 1 AS level FROM user WHERE id = ? -- Start with the given user
           UNION ALL
-          SELECT u.* FROM user u
+          SELECT u.*, a.level + 1 FROM user u
           INNER JOIN ancestor a ON u.id = a.parentId -- Recursive join
+          WHERE a.level < ?
       ) 
       SELECT * FROM ancestor WHERE id != ?;`,
-      [userId, userId]
+      [userId, userId, limit]
     );
    
     return parents;

@@ -6,7 +6,13 @@ import { Post } from './entities/post.entity';
 
 @Injectable()
 export class PostService {
-    constructor(@InjectRepository(Post) private repo: Repository<Post>) {}
+    private readonly allRelations: string[];
+    constructor(
+        @InjectRepository(Post) 
+        private repo: Repository<Post>
+    ) {
+        this.allRelations = this.repo.metadata.relations.map((rel) => rel.propertyName);
+    }
 
     async create(createPostInput: CreatePostInput) {
         const { title, content } = createPostInput;
@@ -21,6 +27,9 @@ export class PostService {
 
     // Fetch a single post by ID
     async findOne(id: number): Promise<Post | null> {
-        return await this.repo.findOne({ where: { id } });
+        return await this.repo.findOne({ 
+            where: { id },
+            relations: this.allRelations
+        });
     }
 }

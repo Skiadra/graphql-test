@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../graphql/user/entities/user.entity';
 import { Post } from '../graphql/post/entities/post.entity';
+import { Comment } from 'src/graphql/comment/entities/comment.entity';
 
 @Injectable()
 export class SeederService {
@@ -11,6 +12,8 @@ export class SeederService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
 
   async seed() {
@@ -18,6 +21,7 @@ export class SeederService {
 
     await this.postRepository.delete({});
     await this.userRepository.delete({});
+    await this.commentRepository.delete({});
 
     const user1 = this.userRepository.create({
       email: 'user1@example.com',
@@ -101,6 +105,14 @@ export class SeederService {
     });
 
     await this.postRepository.save([post1, post2]);
+
+    const comment1 = this.commentRepository.create({
+      content: 'This is the first comment for first post.',
+      user: user2,
+      post: post1
+    });
+
+    await this.commentRepository.save(comment1);
 
     console.log('Seeding complete.');
   }
