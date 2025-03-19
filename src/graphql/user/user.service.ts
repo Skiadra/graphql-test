@@ -19,7 +19,7 @@ export class UserService {
     );
   }
 
-  async create(createUserInput: CreateUserInput) {
+  async create(createUserInput: CreateUserInput): Promise<User> {
     const { username, email, password, parentId } = createUserInput;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = this.repo.create({
@@ -66,7 +66,7 @@ export class UserService {
   // CTE For efficient recursive
 
   async getDescendant(userId: number, limit: number): Promise<User[]> {
-    const descendants = await this.repo.query(
+    const descendants: User[] = (await this.repo.query(
       `WITH RECURSIVE descendants AS (
           SELECT *, 1 AS level FROM user WHERE id = ? -- Start with the given user ID
           UNION ALL
@@ -76,13 +76,13 @@ export class UserService {
       ) 
       SELECT * FROM descendants WHERE id != ?;`,
       [userId, userId, limit],
-    );
+    )) as User[];
 
     return descendants;
   }
 
   async getAncestor(userId: number, limit: number): Promise<User[]> {
-    const parents = await this.repo.query(
+    const parents: User[] = (await this.repo.query(
       `WITH RECURSIVE ancestor AS (
           SELECT *, 1 AS level FROM user WHERE id = ? -- Start with the given user
           UNION ALL
@@ -92,7 +92,7 @@ export class UserService {
       ) 
       SELECT * FROM ancestor WHERE id != ?;`,
       [userId, userId, limit],
-    );
+    )) as User[];
 
     return parents;
   }

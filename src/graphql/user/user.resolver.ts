@@ -18,30 +18,32 @@ import { GqlAuthGuard } from '../auth/gql-auth.guard';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
   @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.userService.create(createUserInput);
+  async createUser(
+    @Args('createUserInput') createUserInput: CreateUserInput,
+  ): Promise<User> {
+    return await this.userService.create(createUserInput);
   }
 
   @UseGuards(GqlAuthGuard)
   @Query(() => [User], { name: 'allUsers' })
   async findAll(@Args() args: FetchAllUsersArgs): Promise<User[]> {
-    return this.userService.findAll(args);
+    return await this.userService.findAll(args);
   }
 
   @Query(() => User, { name: 'user' })
   async findOne(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<User | null> {
-    return this.userService.findOne(id);
+    return await this.userService.findOne(id);
   }
 
   @ResolveField(() => [User], { nullable: true })
   async descendant(@Parent() user: User): Promise<User[]> {
-    return this.userService.getDescendant(user.id, 10);
+    return await this.userService.getDescendant(user.id, 10);
   }
 
   @ResolveField(() => [User], { nullable: true })
   async ancestor(@Parent() user: User): Promise<User[]> {
-    return this.userService.getAncestor(user.id, 10);
+    return await this.userService.getAncestor(user.id, 10);
   }
 }

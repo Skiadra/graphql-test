@@ -12,7 +12,7 @@ import { AuthResolver } from './auth.resolver';
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET, // Replace with your own secret
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '60m' },
     }),
   ],

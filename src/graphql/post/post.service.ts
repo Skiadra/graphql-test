@@ -16,7 +16,7 @@ export class PostService {
     );
   }
 
-  async create(createPostInput: CreatePostInput) {
+  async create(createPostInput: CreatePostInput): Promise<Post> {
     const { title, content } = createPostInput;
     const user = this.repo.create({ title, content });
     return await this.repo.save(user);

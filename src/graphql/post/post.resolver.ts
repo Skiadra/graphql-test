@@ -7,17 +7,21 @@ import { Post } from './entities/post.entity';
 export class PostResolver {
   constructor(private readonly postService: PostService) {}
   @Mutation(() => Post)
-  createPost(@Args('createPostInput') createPostInput: CreatePostInput) {
-    return this.postService.create(createPostInput);
+  async createPost(
+    @Args('createPostInput') createPostInput: CreatePostInput,
+  ): Promise<Post> {
+    return await this.postService.create(createPostInput);
   }
 
   @Query(() => [Post], { name: 'allPosts' })
-  findAll() {
-    return this.postService.findAll();
+  async findAll(): Promise<Post[]> {
+    return await this.postService.findAll();
   }
 
   @Query(() => Post, { name: 'post' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.postService.findOne(id);
+  async findOne(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Post | null> {
+    return await this.postService.findOne(id);
   }
 }

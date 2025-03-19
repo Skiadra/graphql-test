@@ -8,13 +8,13 @@ export class CommentResolver {
 
   @Query(() => [Comment], { name: 'allComments' })
   async findAll(): Promise<Comment[]> {
-    return this.commentService.findAll();
+    return await this.commentService.findAll();
   }
 
   @Query(() => Comment, { name: 'comment' })
   async findOne(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Comment | null> {
-    return this.commentService.findOne(id);
+    return await this.commentService.findOne(id);
   }
 }

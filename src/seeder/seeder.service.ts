@@ -17,7 +17,7 @@ export class SeederService {
     private readonly commentRepository: Repository<Comment>,
   ) {}
 
-  async seed() {
+  async seed(): Promise<void> {
     console.log('Starting seeding process...');
 
     await this.postRepository.delete({});

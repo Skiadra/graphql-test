@@ -28,19 +28,27 @@ export default tseslint.config(
   },
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-require-imports': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-call': 'off',
-      '@typescript-eslint/no-unsafe-function-type': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unused-vars': 'off',
-      '@typescript-eslint/no-unsafe-enum-comparison': 'off',
-      '@typescript-eslint/require-await': 'off',
-      '@typescript-eslint/no-empty-object-type': 'off',
-      '@typescript-eslint/unbound-method': 'off',
+      // TypeScript Best Practices
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/explicit-module-boundary-types': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-inferrable-types': 'off',
+
+      // NestJS / GraphQL Specific Rules
+      '@typescript-eslint/ban-ts-comment': 'off', // Useful for NestJS decorators
+      '@typescript-eslint/no-unsafe-call': 'warn',
+      '@typescript-eslint/no-unsafe-assignment': 'warn',
+      '@typescript-eslint/no-unsafe-member-access': 'warn',
+      '@typescript-eslint/no-unsafe-return': 'warn',
+      '@typescript-eslint/no-floating-promises': 'error', // Ensures async calls are handled properly
+
+      // Allow NestJS decorators & class-based code
+      '@typescript-eslint/ban-types': 'off',
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      '@typescript-eslint/no-extraneous-class': 'off',
     },
   },
 );

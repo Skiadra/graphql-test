@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../graphql/user/entities/user.entity';
 import { Post } from '../graphql/post/entities/post.entity';
 import { SeederService } from './seeder.service';
-import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 import { Comment } from 'src/graphql/comment/entities/comment.entity';
 

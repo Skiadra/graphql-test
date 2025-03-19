@@ -1,4 +1,4 @@
-import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Comment } from 'src/graphql/comment/entities/comment.entity';
 import { User } from 'src/graphql/user/entities/user.entity';
 import {
