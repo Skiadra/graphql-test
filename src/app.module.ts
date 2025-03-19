@@ -14,12 +14,14 @@ import * as costAnalysis from 'graphql-cost-analysis';
 import { GraphQLError } from 'graphql';
 import { CommentModule } from './graphql/comment/comment.module';
 import { Comment } from './graphql/comment/entities/comment.entity';
-
-// Load environment variables early
-config();
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './graphql/auth/auth.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // Makes ConfigService available everywhere
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -33,30 +35,47 @@ config();
             defaultCost: 1,
             variables: validationContext.getVariableUsages,
             createError: (max, actual) =>
-              new Error(`Query cost is ${actual}, which exceeds the max cost of ${max}`),
+              new Error(
+                `Query cost is ${actual}, which exceeds the max cost of ${max}`,
+              ),
           }),
       ],
-      formatError: (error: GraphQLError) => { // Format error message
-        return {
+      formatError: (error: GraphQLError) => {
+        const configService = new ConfigService();
+        const isDev = configService.get<string>('CURRENT_ENV') === 'dev';
+
+        const formattedError: any = {
           message: error.message,
           code: error.extensions?.code || 'INTERNAL_SERVER_ERROR',
         };
+
+        if (isDev) {
+          formattedError.path = error.path;
+          formattedError.locations = error.locations;
+        }
+
+        return formattedError;
       },
     }),
-    TypeOrmModule.forRoot({
-      type: process.env.DATABASE_TYPE as 'mysql',
-      host: process.env.DATABASE_HOST || 'localhost',
-      port: parseInt(process.env.DATABASE_PORT ?? '3306'),
-      username: process.env.DATABASE_USER || 'root',
-      password: process.env.DATABASE_PASSWORD || '123456',
-      database: process.env.DATABASE_NAME || 'test-gql',
-      entities: [User, Post, Comment],
-      synchronize: true,
-      autoLoadEntities: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule], // Import ConfigModule
+      inject: [ConfigService], // Inject ConfigService
+      useFactory: (configService: ConfigService) => ({
+        type: configService.get<'mysql'>('DATABASE_TYPE', 'mysql'),
+        host: configService.get<string>('DATABASE_HOST', 'localhost'),
+        port: configService.get<number>('DATABASE_PORT', 3306),
+        username: configService.get<string>('DATABASE_USER', 'root'),
+        password: configService.get<string>('DATABASE_PASSWORD', '123456'),
+        database: configService.get<string>('DATABASE_NAME', 'test-gql'),
+        entities: [User, Post, Comment],
+        synchronize: true,
+        autoLoadEntities: true,
+      }),
     }),
     UserModule,
     PostModule,
     CommentModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

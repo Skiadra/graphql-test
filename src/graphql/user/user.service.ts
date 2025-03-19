@@ -4,47 +4,63 @@ import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
 import { FetchAllUsersArgs } from './dto/fetch-all-users.input';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
   private readonly allRelations: string[];
   constructor(
     @InjectRepository(User)
-    private repo: Repository<User>
+    private repo: Repository<User>,
   ) {
     // Initialize the class variable with all relations
-    this.allRelations = this.repo.metadata.relations.map((rel) => rel.propertyName);
+    this.allRelations = this.repo.metadata.relations.map(
+      (rel) => rel.propertyName,
+    );
   }
 
   async create(createUserInput: CreateUserInput) {
-    const { email, password, parentId } = createUserInput;
-    const user = this.repo.create({ email, password });
+    const { username, email, password, parentId } = createUserInput;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = this.repo.create({
+      username: username,
+      email: email,
+      password: hashedPassword,
+    });
 
     if (parentId) {
-        const parent = await this.repo.findOne({ where: { id: parentId } });
-        if (parent) {
-            user.parent = parent;
-        }
+      const parent = await this.repo.findOne({ where: { id: parentId } });
+      if (parent) {
+        user.parent = parent;
+      }
     }
     return await this.repo.save(user);
   }
-  
+
   async findAll(args: FetchAllUsersArgs): Promise<User[]> {
     const page = args.page ?? 1;
     const limit = args.limit ?? 5;
 
     return await this.repo.find({
       take: limit,
-      skip: ( page - 1 ) * limit,
+      skip: (page - 1) * limit,
       relations: this.allRelations,
     });
   }
 
   async findOne(id: number): Promise<User | null> {
-    return await this.repo.findOne({ 
+    return await this.repo.findOne({
       where: { id },
       relations: this.allRelations,
     });
+  }
+
+  async findOneByUsername(username: string): Promise<User | null> {
+    return this.repo
+      .createQueryBuilder('user')
+      .addSelect('user.password') // Ensure password is retrieved
+      .where('user.username = :username', { username })
+      .getOne();
   }
 
   // CTE For efficient recursive
@@ -59,9 +75,9 @@ export class UserService {
           WHERE d.level < ?
       ) 
       SELECT * FROM descendants WHERE id != ?;`,
-      [userId, userId, limit]
+      [userId, userId, limit],
     );
-  
+
     return descendants;
   }
 
@@ -75,9 +91,9 @@ export class UserService {
           WHERE a.level < ?
       ) 
       SELECT * FROM ancestor WHERE id != ?;`,
-      [userId, userId, limit]
+      [userId, userId, limit],
     );
-   
+
     return parents;
   }
 }
