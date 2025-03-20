@@ -6,6 +6,7 @@ import {
   Int,
   ResolveField,
   Parent,
+  Context,
 } from '@nestjs/graphql';
 import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.input';
@@ -13,6 +14,7 @@ import { User } from './entities/user.entity';
 import { FetchAllUsersArgs } from './dto/fetch-all-users.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
+import { AuthRequest } from '../auth/interface/auth-request.interface';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -22,6 +24,13 @@ export class UserResolver {
     @Args('createUserInput') createUserInput: CreateUserInput,
   ): Promise<User> {
     return await this.userService.create(createUserInput);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => User, { name: 'me' })
+  async me(@Context() context: { req: AuthRequest }): Promise<User | null> {
+    const user = context.req.user;
+    return await this.userService.findOne(user.userId);
   }
 
   @UseGuards(GqlAuthGuard)

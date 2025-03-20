@@ -15,6 +15,9 @@ import { CommentModule } from './graphql/comment/comment.module';
 import { Comment } from './graphql/comment/entities/comment.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './graphql/auth/auth.module';
+import { config } from 'dotenv';
+
+config()
 
 @Module({
   imports: [
@@ -32,7 +35,8 @@ import { AuthModule } from './graphql/auth/auth.module';
         //   costAnalysis({
         //     maximumCost: 1000,
         //     defaultCost: 1,
-        //     variables: validationContext.getVariableUsages,
+        //     variables:
+        //       validationContext.getVariableUsages.bind(validationContext),
         //     createError: (max, actual) =>
         //       new Error(
         //         `Query cost is ${actual}, which exceeds the max cost of ${max}`,

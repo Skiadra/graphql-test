@@ -55,12 +55,12 @@ export class UserService {
     });
   }
 
-  async findOneByUsername(username: string): Promise<User | null> {
+  async findOneByUsername(username: string): Promise<User> {
     return this.repo
       .createQueryBuilder('user')
       .addSelect('user.password') // Ensure password is retrieved
       .where('user.username = :username', { username })
-      .getOne();
+      .getOneOrFail();
   }
 
   // CTE For efficient recursive
