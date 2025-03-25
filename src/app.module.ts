@@ -5,19 +5,19 @@ import { join } from 'path';
 import { User } from './graphql/user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './graphql/user/user.module';
-import { Post } from './graphql/post/entities/post.entity';
+import { Request } from './graphql/request/entities/request.entity';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { PostModule } from './graphql/post/post.module';
+import { RequestModule } from './graphql/request/request.module';
 import * as depthLimit from 'graphql-depth-limit';
 import * as costAnalysis from 'graphql-cost-analysis';
 import { GraphQLError } from 'graphql';
-import { CommentModule } from './graphql/comment/comment.module';
-import { Comment } from './graphql/comment/entities/comment.entity';
+import { AnswerModule } from './graphql/answer/answer.module';
+import { Answer } from './graphql/answer/entities/answer.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './graphql/auth/auth.module';
 import { config } from 'dotenv';
 
-config()
+config();
 
 @Module({
   imports: [
@@ -69,15 +69,15 @@ config()
         port: configService.get<number>('DATABASE_PORT', 3306),
         username: configService.get<string>('DATABASE_USER', 'root'),
         password: configService.get<string>('DATABASE_PASSWORD', '123456'),
-        database: configService.get<string>('DATABASE_NAME', 'test-gql'),
-        entities: [User, Post, Comment],
+        database: configService.get<string>('DATABASE_NAME', 'test_gql'),
+        entities: [User, Request, Answer],
         synchronize: true,
         autoLoadEntities: true,
       }),
     }),
     UserModule,
-    PostModule,
-    CommentModule,
+    RequestModule,
+    AnswerModule,
     AuthModule,
   ],
 })

@@ -15,10 +15,15 @@ import { FetchAllUsersArgs } from './dto/fetch-all-users.input';
 import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/gql-auth.guard';
 import { AuthRequest } from '../auth/interface/auth-request.interface';
+import { RolesGuard } from '../auth/gql-role.guard';
+import { Roles } from 'src/decorator/role.decorator';
+import { UserRole } from 'src/enum/user-role.enum';
+import { FetchAllUsersByRoleArgs } from './dto/fetch-by-role.input';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
+
   @Mutation(() => User)
   async createUser(
     @Args('createUserInput') createUserInput: CreateUserInput,
@@ -33,12 +38,14 @@ export class UserResolver {
     return await this.userService.findOne(user.userId);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Roles(UserRole.ADMIN)
   @Query(() => [User], { name: 'allUsers' })
   async findAll(@Args() args: FetchAllUsersArgs): Promise<User[]> {
     return await this.userService.findAll(args);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => User, { name: 'user' })
   async findOne(
     @Args('id', { type: () => Int }) id: number,
@@ -46,13 +53,9 @@ export class UserResolver {
     return await this.userService.findOne(id);
   }
 
-  @ResolveField(() => [User], { nullable: true })
-  async descendant(@Parent() user: User): Promise<User[]> {
-    return await this.userService.getDescendant(user.id, 10);
-  }
-
-  @ResolveField(() => [User], { nullable: true })
-  async ancestor(@Parent() user: User): Promise<User[]> {
-    return await this.userService.getAncestor(user.id, 10);
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [User], { name: 'usersByRole' })
+  async findAllByRole(@Args() args: FetchAllUsersByRoleArgs): Promise<User[]> {
+    return await this.userService.findAllByRole(args);
   }
 }

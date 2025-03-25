@@ -1,4 +1,5 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
+import { UserRole } from 'src/enum/user-role.enum';
 
 @InputType()
 export class CreateUserInput {
@@ -11,6 +12,12 @@ export class CreateUserInput {
   @Field()
   password: string;
 
-  @Field(() => Int, { nullable: true })
-  parentId?: number;
+  @Field({ nullable: true })
+  wallet?: string;
+
+  @Field()
+  description: string;
+
+  @Field(() => UserRole, { nullable: true, defaultValue: UserRole.USER })
+  role: UserRole;
 }

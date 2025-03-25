@@ -1,25 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Comment } from './entities/comment.entity';
+import { Answer } from './entities/answer.entity';
 
 @Injectable()
-export class CommentService {
+export class AnswerService {
   private readonly allRelations: string[];
   constructor(
-    @InjectRepository(Comment)
-    private repo: Repository<Comment>,
+    @InjectRepository(Answer)
+    private repo: Repository<Answer>,
   ) {
     this.allRelations = this.repo.metadata.relations.map(
       (rel) => rel.propertyName,
     );
   }
 
-  async findAll(): Promise<Comment[]> {
+  async findAll(): Promise<Answer[]> {
     return await this.repo.find();
   }
 
-  async findOne(id: number): Promise<Comment | null> {
+  async findOne(id: number): Promise<Answer | null> {
     return await this.repo.findOne({
       where: { id },
       relations: this.allRelations,

@@ -1,6 +1,7 @@
 import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
-import { Comment } from 'src/graphql/comment/entities/comment.entity';
-import { Post } from 'src/graphql/post/entities/post.entity';
+import { UserRole } from 'src/enum/user-role.enum';
+import { Answer } from 'src/graphql/answer/entities/answer.entity';
+import { Request } from 'src/graphql/request/entities/request.entity';
 import {
   Entity,
   Column,
@@ -8,11 +9,9 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('users')
 @ObjectType()
 export class User {
   @Field(() => ID)
@@ -31,35 +30,30 @@ export class User {
   @HideField()
   password: string;
 
-  @Field(() => [Post], { nullable: true })
-  @OneToMany(() => Post, (post) => post.user, { nullable: true })
-  posts: Post[];
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  wallet?: string;
 
-  @Field(() => User, { nullable: true })
-  @ManyToOne(() => User, (user) => user.children, {
+  @Field()
+  @Column()
+  description: string;
+
+  @Field(() => UserRole)
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
+  role: UserRole;
+
+  @OneToMany(() => Request, (request) => request.requestor, {
     nullable: true,
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'parentId' })
-  parent: User;
+  requests: Request[];
 
-  @Field(() => [User], { nullable: true })
-  @OneToMany(() => User, (user) => user.parent, { nullable: true })
-  children: User[];
-
-  @Field(() => [Comment], { nullable: true })
-  @OneToMany(() => Comment, (comments) => comments.user, { nullable: true })
-  comments: Comment[];
-
-  @Field(() => Date)
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createdAt: Date;
-
-  @Field(() => Date)
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
+  @OneToMany(() => Request, (request) => request.requested, {
+    nullable: true,
+    onDelete: 'CASCADE',
   })
-  updatedAt: Date;
+  requestsReceived: Request[];
+
+  @OneToMany(() => Answer, (answers) => answers.user, { nullable: true })
+  answers: Answer[];
 }
