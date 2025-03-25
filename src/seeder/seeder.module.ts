@@ -4,7 +4,7 @@ import { User } from '../graphql/user/entities/user.entity';
 import { Request } from '../graphql/request/entities/request.entity';
 import { SeederService } from './seeder.service';
 import { config } from 'dotenv';
-import { Comment } from 'src/graphql/answer/entities/comment.entity';
+import { Answer } from 'src/graphql/answer/entities/answer.entity';
 
 config();
 
@@ -17,12 +17,12 @@ config();
       username: process.env.DATABASE_USER || 'root',
       password: process.env.DATABASE_PASSWORD || '12345678',
       database: process.env.DATABASE_NAME || 'test_gql',
-      entities: [User, Request, Comment],
+      entities: [User, Request, Answer],
       synchronize: true,
       dropSchema: process.env.CURRENT_ENV == 'dev' ? true : false,
       autoLoadEntities: true,
     }),
-    TypeOrmModule.forFeature([User, Request, Comment]),
+    TypeOrmModule.forFeature([User, Request, Answer]),
   ],
   providers: [SeederService],
 })

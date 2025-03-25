@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../graphql/user/entities/user.entity';
 import { Request } from '../graphql/request/entities/request.entity';
-import { Comment } from 'src/graphql/answer/entities/comment.entity';
+import { Answer } from 'src/graphql/answer/entities/answer.entity';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()

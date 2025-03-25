@@ -30,7 +30,9 @@ export class Answer {
   user: User;
 
   @Field(() => Request)
-  @ManyToOne(() => Request, (request) => request.answers, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Request, (request) => request.answers, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'requestId' })
   request: Request;
 }
