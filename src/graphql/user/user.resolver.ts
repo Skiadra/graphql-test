@@ -13,12 +13,13 @@ import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
 import { FetchAllUsersArgs } from './dto/fetch-all-users.input';
 import { UseGuards } from '@nestjs/common';
-import { GqlAuthGuard } from '../auth/gql-auth.guard';
-import { AuthRequest } from '../auth/interface/auth-request.interface';
-import { RolesGuard } from '../auth/gql-role.guard';
+import { GqlAuthGuard } from './auth/gql-auth.guard';
+import { AuthRequest } from './auth/interface/auth-request.interface';
+import { RolesGuard } from './auth/gql-role.guard';
 import { Roles } from 'src/decorator/role.decorator';
 import { UserRole } from 'src/enum/user-role.enum';
 import { FetchAllUsersByRoleArgs } from './dto/fetch-by-role.input';
+import { Answer } from '../answer/entities/answer.entity';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -57,5 +58,21 @@ export class UserResolver {
   @Query(() => [User], { name: 'usersByRole' })
   async findAllByRole(@Args() args: FetchAllUsersByRoleArgs): Promise<User[]> {
     return await this.userService.findAllByRole(args);
+  }
+
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Answer], { name: 'myAnswers' })
+  async getMyAnswers(
+    @Context() context: { req: AuthRequest },
+  ): Promise<Answer[]> {
+    const userId = context.req.user.userId; // From JWT/auth
+    const user = await this.userService.findOne(userId);
+    
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user.answers;
   }
 }

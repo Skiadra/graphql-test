@@ -11,8 +11,8 @@ export class CreateRequestInput {
   @Field()
   study_program: string;
 
-  @Field()
-  lecturer: string;
+  @Field({ nullable: true })
+  lecturer?: string;
 
   @Field({ nullable: true })
   attachment?: string;
@@ -21,8 +21,8 @@ export class CreateRequestInput {
   status: string;
 
   @Field(() => ID)
-  requestorId: number; // Foreign key reference to requestor (User)
+  requestorId: number;
 
   @Field(() => ID, { nullable: true })
-  requestedId?: number; // Foreign key reference to requested user (optional)
+  requestedId?: number;
 }

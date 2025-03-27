@@ -14,7 +14,7 @@ import { GraphQLError } from 'graphql';
 import { AnswerModule } from './graphql/answer/answer.module';
 import { Answer } from './graphql/answer/entities/answer.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from './graphql/auth/auth.module';
+import { AuthModule } from './graphql/user/auth/auth.module';
 import { config } from 'dotenv';
 
 config();
