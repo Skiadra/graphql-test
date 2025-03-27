@@ -28,7 +28,6 @@ config();
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
       validationRules: [
         depthLimit(5), // Dipakai untuk membatasi depth query (nesting)
         // (validationContext) =>
