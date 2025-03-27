@@ -44,6 +44,9 @@ jobs:
           # Apply patches
           npm run postinstall
 
+          # Seed database
+          npm run seed
+
           # Build the application
           npm run build
 
