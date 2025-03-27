@@ -31,6 +31,10 @@ jobs:
           # Pull the latest code
           git pull origin main
 
+          # Create the .env file from GitHub Secret
+          echo "${{ secrets.ENV_FILE }}" > .env
+          chmod 600 .env  # Secure the .env file
+
           # Install dependencies
           npm install
 
@@ -38,7 +42,7 @@ jobs:
           npm run build
 
           # Restart the application using PM2
-          pm2 restart nest-app || pm2 start dist/main.js --name nest-app
+          pm2 restart graphql-test || pm2 start dist/main.js --name graphql-test
 
           # Save PM2 state
           pm2 save
