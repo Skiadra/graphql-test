@@ -24,35 +24,37 @@ jobs:
         run: |
           ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
           set -e
+
+          # Navigate to the project directory
           cd ${{ secrets.VPS_DEPLOY_PATH }} || { echo "Project folder not found!"; exit 1; }
 
-      - name: Git Pull
-        run: |
+          # Pull the latest code
           git reset --hard HEAD
           git clean -fd
           git pull origin dev
 
-      - name: Creating .env
-        run: |
+          # Create the .env file from GitHub Secret
+          touch .env
           echo "${{ secrets.ENV }}" > .env
           chmod 600 .env  # Secure the .env file
 
-      - name: Managing Package
-        run: |
+          # Install dependencies
           npm install
+
+          # Apply patches
           npm run postinstall
-      
-      - name: Building App
-        run: |
-          npm run build
-      
-      - name: Seeding database
-        run: |
+
+          # Seed database
           npm run seed
 
-      - name: Start pm2
-        run: |
+          # Build the application
+          npm run build
+
+          # Restart the application using PM2
           pm2 restart graphql-test || pm2 start dist/main.js --name graphql-test
+
+          # Save PM2 state
           pm2 save
+
           echo "Deployment completed successfully!"
           EOF
