@@ -41,14 +41,14 @@ jobs:
         run: |
           npm install
           npm run postinstall
-
-      - name: Seeding database
-        run: |
-          npm run seed
       
       - name: Building App
         run: |
           npm run build
+      
+      - name: Seeding database
+        run: |
+          npm run seed
 
       - name: Start pm2
         run: |
