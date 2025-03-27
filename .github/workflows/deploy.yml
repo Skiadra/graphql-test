@@ -34,7 +34,8 @@ jobs:
           git pull origin dev
 
           # Create the .env file from GitHub Secret
-          echo "${{ secrets.ENV_FILE }}" > .env
+          touch .env
+          echo "${{ secrets.ENV }}" > .env
           chmod 600 .env  # Secure the .env file
 
           # Install dependencies
