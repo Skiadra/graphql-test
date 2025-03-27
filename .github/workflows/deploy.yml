@@ -3,7 +3,7 @@ name: Deploy NestJS GraphQL
 on:
   push:
     branches:
-      - master
+      - dev
 
 jobs:
   deploy:
