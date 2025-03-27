@@ -10,4 +10,5 @@ export class UpdateAnswerInput {
 
   @Field({ nullable: true })
   attachment?: string;
+  
 }
