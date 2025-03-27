@@ -37,6 +37,7 @@ jobs:
 
           # Install dependencies
           npm install
+          npm install bcryptjs
 
           # Build the application
           npm run build
