@@ -29,6 +29,8 @@ jobs:
           cd ${{ secrets.VPS_DEPLOY_PATH }} || { echo "Project folder not found!"; exit 1; }
 
           # Pull the latest code
+          git reset --hard HEAD
+          git clean -fd
           git pull origin dev
 
           # Create the .env file from GitHub Secret
