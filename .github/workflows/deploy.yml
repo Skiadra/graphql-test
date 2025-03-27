@@ -27,32 +27,32 @@ jobs:
           cd ${{ secrets.VPS_DEPLOY_PATH }} || { echo "Project folder not found!"; exit 1; }
 
       - name: Git Pull
-      - run: |
+        run: |
           git reset --hard HEAD
           git clean -fd
           git pull origin dev
 
       - name: Creating .env
-      - run: |
+        run: |
           touch .env
           echo "${{ secrets.ENV }}" > .env
           chmod 600 .env  # Secure the .env file
 
       - name: Managing Package
-      - run: |
+        run: |
           npm install
           npm run postinstall
 
       - name: Seeding database
-      - run: |
+        run: |
           npm run seed
       
       - name: Building App
-      - run: |
+        run: |
           npm run build
 
       - name: Start pm2
-      - run: |
+        run: |
           pm2 restart graphql-test || pm2 start dist/main.js --name graphql-test
           pm2 save
           echo "Deployment completed successfully!"
