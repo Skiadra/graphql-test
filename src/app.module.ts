@@ -27,7 +27,9 @@ config();
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      introspection: true,
       playground: true,
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
       validationRules: [
         depthLimit(5), // Dipakai untuk membatasi depth query (nesting)
         // (validationContext) =>
