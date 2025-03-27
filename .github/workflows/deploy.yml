@@ -34,7 +34,6 @@ jobs:
 
       - name: Creating .env
         run: |
-          touch .env
           echo "${{ secrets.ENV }}" > .env
           chmod 600 .env  # Secure the .env file
 
