@@ -10,7 +10,7 @@ import { Roles } from 'src/decorator/role.decorator';
 import { UserRole } from '@enum/user-role.enum';
 import { UpdateRequestInput } from './dto/update-request.input';
 import { DeleteRequestInput } from './dto/delete-request.input';
-import { Response } from 'src/common/default.response';
+import { DefaultResponse} from 'src/common/default.response';
 
 @Resolver(() => Request)
 export class RequestResolver {
@@ -59,7 +59,7 @@ export class RequestResolver {
 
   @UseGuards(GqlAuthGuard, RolesGuard)
   @Roles(UserRole.USER)
-  @Mutation(() => Response)
+  @Mutation(() => DefaultResponse)
   async delete(
     @Args('deleteRequestInput') deleteRequestInput: DeleteRequestInput,
     @Context() context: { req: AuthRequest },

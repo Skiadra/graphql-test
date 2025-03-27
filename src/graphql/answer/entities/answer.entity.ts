@@ -30,6 +30,7 @@ export class Answer {
 
   @ManyToOne(() => Request, (request) => request.answers, {
     onDelete: 'CASCADE',
+    eager: true,
   })
   @JoinColumn({ name: 'requestId' })
   request: Request;

@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class Response {
+export class DefaultResponse {
   @Field()
   message: string;
 
