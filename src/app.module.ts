@@ -65,10 +65,10 @@ config();
       inject: [ConfigService], // Inject ConfigService
       useFactory: (configService: ConfigService) => ({
         type: configService.get<'mysql'>('DATABASE_TYPE', 'mysql'),
-        host: configService.get<string>('DATABASE_HOST', 'localhost'),
+        host: configService.get<string>('DATABASE_HOST', '127.0.0.1'),
         port: configService.get<number>('DATABASE_PORT', 3306),
         username: configService.get<string>('DATABASE_USER', 'root'),
-        password: configService.get<string>('DATABASE_PASSWORD', '123456'),
+        password: configService.get<string>('DATABASE_PASSWORD', '12345678'),
         database: configService.get<string>('DATABASE_NAME', 'test_gql'),
         entities: [User, Request, Answer],
         synchronize: true,
