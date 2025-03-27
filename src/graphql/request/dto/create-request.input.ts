@@ -1,4 +1,4 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { InputType, Field, ID, HideField } from '@nestjs/graphql';
 
 @InputType()
 export class CreateRequestInput {
@@ -19,9 +19,6 @@ export class CreateRequestInput {
 
   @Field()
   status: string;
-
-  @Field(() => ID)
-  requestorId: number;
 
   @Field(() => ID, { nullable: true })
   requestedId?: number;

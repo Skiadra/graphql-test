@@ -5,7 +5,7 @@ import { SeederService } from './seeder/seeder.service';
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(SeederModule);
   const seeder = app.get(SeederService);
-  
+
   try {
     await seeder.seed();
     console.log('Seeding completed successfully!');
@@ -18,4 +18,7 @@ async function bootstrap() {
   }
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('Bootstrap failed:', err);
+  process.exit(1);
+});

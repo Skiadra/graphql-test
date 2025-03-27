@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserRole } from '@enum/user-role.enum';
 import { Answer } from 'src/graphql/answer/entities/answer.entity';
 import { User } from 'src/graphql/user/entities/user.entity';
-import { Request } from 'src/graphql/request/entities/request.entity'
+import { Request } from 'src/graphql/request/entities/request.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 
@@ -26,10 +26,10 @@ export class SeederService {
       await this.seedAnswers();
       return { success: true, message: 'Database seeded successfully' };
     } catch (error) {
-      return { 
-        success: false, 
+      return {
+        success: false,
         message: 'Seeding failed',
-        error: error.message 
+        error: error.message,
       };
     }
   }
@@ -80,7 +80,7 @@ export class SeederService {
       const hashedPassword = await bcrypt.hash(password, 10);
       const user = this.userRepository.create({
         password: hashedPassword,
-        ...rest
+        ...rest,
       });
       await this.userRepository.save(user);
     }
@@ -136,18 +136,20 @@ export class SeederService {
 
     const answers = [
       {
-        description: 'I can help with this math problem. Here are the solutions.',
+        description:
+          'I can help with this math problem. Here are the solutions.',
         attachment: 'math_solutions.pdf',
         user: joki,
         request: requests.find((r) => r.assignment === 'Math Homework'),
-      },  
+      },
       {
         description: 'I need more information about the project requirements.',
         user: requests[1].requestor,
         request: requests[1],
       },
       {
-        description: 'The physics assignment has been completed. Please review.',
+        description:
+          'The physics assignment has been completed. Please review.',
         attachment: 'physics_assignment_solutions.docx',
         user: joki,
         request: requests.find((r) => r.assignment === 'Physics Assignment'),

@@ -20,6 +20,7 @@ import { Roles } from 'src/decorator/role.decorator';
 import { UserRole } from 'src/enum/user-role.enum';
 import { FetchAllUsersByRoleArgs } from './dto/fetch-by-role.input';
 import { Answer } from '../answer/entities/answer.entity';
+import { Request } from '../request/entities/request.entity';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -60,6 +61,20 @@ export class UserResolver {
     return await this.userService.findAllByRole(args);
   }
 
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Request], { name: 'myRequests' })
+  async getMyRequest(
+    @Context() context: { req: AuthRequest },
+  ): Promise<Request[]> {
+    const userId = context.req.user.userId; // From JWT/auth
+    const user = await this.userService.findOne(userId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user.requests;
+  }
 
   @UseGuards(GqlAuthGuard)
   @Query(() => [Answer], { name: 'myAnswers' })
@@ -68,7 +83,7 @@ export class UserResolver {
   ): Promise<Answer[]> {
     const userId = context.req.user.userId; // From JWT/auth
     const user = await this.userService.findOne(userId);
-    
+
     if (!user) {
       throw new Error('User not found');
     }
