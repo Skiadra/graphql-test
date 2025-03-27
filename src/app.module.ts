@@ -61,8 +61,8 @@ config();
       },
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule], // Import ConfigModule
-      inject: [ConfigService], // Inject ConfigService
+      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: configService.get<'mysql'>('DATABASE_TYPE', 'mysql'),
         host: configService.get<string>('DATABASE_HOST', '127.0.0.1'),
