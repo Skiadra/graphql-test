@@ -68,4 +68,11 @@ export class RequestService {
       relations: this.allRelations,
     });
   }
+
+  async findByUserId(id: number): Promise<Request[]> {
+    return await this.repo.find({
+      where: { requestor: { id } },
+      relations: this.allRelations,
+    });
+  }
 }

@@ -67,4 +67,11 @@ export class AnswerService {
       relations: this.allRelations,
     });
   }
+
+  async findByUserId(id: number): Promise<Answer[]> {
+    return await this.repo.find({
+      where: { user: { id } },
+      relations: this.allRelations,
+    });
+  }
 }

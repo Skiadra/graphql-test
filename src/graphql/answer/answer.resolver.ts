@@ -96,4 +96,15 @@ export class AnswerResolver {
   ): Promise<Answer | null> {
     return await this.answerService.findOne(id);
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Answer], { name: 'myAnswers' })
+  async getMyAnswers(
+    @Context() context: { req: AuthRequest },
+  ): Promise<Answer[]> {
+    const userId = context.req.user.userId; // From JWT/auth
+    const answers = await this.answerService.findByUserId(userId);
+
+    return answers;
+  }
 }
