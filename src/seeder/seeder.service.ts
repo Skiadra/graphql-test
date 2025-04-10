@@ -114,6 +114,7 @@ export class SeederService {
         assignment: 'Physics Assignment',
         faculty: 'Science',
         studyProgram: 'Physics',
+        lecturer: 'Dr. Smith',
         status: 'Completed',
         requestor: users.find((u) => u.username === 'student2'),
         requested: joki,
