@@ -144,7 +144,8 @@ export class SeederService {
       },
       {
         description: 'I need more information about the project requirements.',
-        user: requests[1].requestor,
+        attachment: 'test.pdf',
+        user: joki,
         request: requests[1],
       },
       {
