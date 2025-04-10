@@ -7,8 +7,8 @@ async function bootstrap() {
   const seeder = app.get(SeederService);
 
   try {
-    await seeder.seed();
-    console.log('Seeding completed successfully!');
+    const result = await seeder.seed();
+    console.log('Seeder Result:', result);
   } catch (error) {
     console.error('Seeding failed:', error);
     process.exit(1);
