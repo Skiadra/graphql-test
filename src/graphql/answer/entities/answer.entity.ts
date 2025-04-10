@@ -9,7 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('answers')
 @ObjectType()
 export class Answer {
   @Field(() => ID)
