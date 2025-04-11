@@ -4,10 +4,10 @@ import { Min } from 'class-validator';
 @ArgsType()
 export class FetchAllAnswersArgs {
   @Field(() => Int, { nullable: true })
-  @Min(0)
+  @Min(1)
   limit?: number;
 
   @Field(() => Int, { nullable: true })
-  @Min(1)
-  page?: number;
+  @Min(0)
+  offset?: number;
 }

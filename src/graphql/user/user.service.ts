@@ -38,12 +38,12 @@ export class UserService {
   }
 
   async findAll(args: FetchAllUsersArgs): Promise<User[]> {
-    const page = args.page ?? 1;
-    const limit = args.limit ?? 5;
+    const offset = args.offset ?? 1;
+    const limit = args.limit ?? 10;
 
     return await this.repo.find({
+      skip: offset,
       take: limit,
-      skip: (page - 1) * limit,
       relations: this.allRelations,
     });
   }

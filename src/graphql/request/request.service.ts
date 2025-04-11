@@ -60,12 +60,12 @@ export class RequestService {
   }
 
   async findAll(args: FetchAllRequestsArgs): Promise<Request[]> {
-    const page = args.page ?? 1;
+    const offset = args.offset ?? 0;
     const limit = args.limit ?? 5;
 
     return await this.repo.find({
       take: limit,
-      skip: (page - 1) * limit,
+      skip: offset,
       relations: this.allRelations,
     });
   }
