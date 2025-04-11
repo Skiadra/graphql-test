@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { SeederModule } from './seeder/seeder.module';
 import { SeederService } from './seeder/seeder.service';
+import { error } from 'console';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(SeederModule);
@@ -9,6 +10,11 @@ async function bootstrap() {
   try {
     const result = await seeder.seed();
     console.log('Seeder Result:', result);
+
+    if (!result.success) {
+      throw new error('SEEDER FAILED!!!');
+    }
+
   } catch (error) {
     console.error('Seeding failed:', error);
     process.exit(1);

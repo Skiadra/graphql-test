@@ -5,6 +5,7 @@ import { CreateRequestInput } from './dto/create-request.input';
 import { Request } from './entities/request.entity';
 import { UpdateRequestInput } from './dto/update-request.input';
 import { DeleteRequestInput } from './dto/delete-request.input';
+import { FetchAllRequestsArgs } from './dto/fetch-all-request.input';
 
 @Injectable()
 export class RequestService {
@@ -58,8 +59,15 @@ export class RequestService {
     return true;
   }
 
-  async findAll(): Promise<Request[]> {
-    return await this.repo.find();
+  async findAll(args: FetchAllRequestsArgs): Promise<Request[]> {
+    const page = args.page ?? 1;
+    const limit = args.limit ?? 5;
+
+    return await this.repo.find({
+      take: limit,
+      skip: (page - 1) * limit,
+      relations: this.allRelations,
+    });
   }
 
   async findOne(id: number): Promise<Request | null> {

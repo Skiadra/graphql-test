@@ -11,6 +11,7 @@ import { AuthRequest } from '../user/auth/interface/auth-request.interface';
 import { UpdateAnswerInput } from './dto/update-answer.input';
 import { DeleteAnswerInput } from './dto/delete-answer.input';
 import { DefaultResponse } from 'src/common/default.response';
+import { FetchAllAnswersArgs } from './dto/fetch-all-answer.input';
 
 @Resolver(() => Answer)
 export class AnswerResolver {
@@ -86,8 +87,8 @@ export class AnswerResolver {
   }
 
   @Query(() => [Answer], { name: 'allAnswers' })
-  async findAll(): Promise<Answer[]> {
-    return await this.answerService.findAll();
+  async findAll(@Args() args: FetchAllAnswersArgs): Promise<Answer[]> {
+    return await this.answerService.findAll(args);
   }
 
   @Query(() => Answer, { name: 'answer' })

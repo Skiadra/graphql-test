@@ -11,6 +11,7 @@ import { UserRole } from '@enum/user-role.enum';
 import { UpdateRequestInput } from './dto/update-request.input';
 import { DeleteRequestInput } from './dto/delete-request.input';
 import { DefaultResponse} from 'src/common/default.response';
+import { FetchAllRequestsArgs } from './dto/fetch-all-request.input';
 
 @Resolver(() => Request)
 export class RequestResolver {
@@ -84,8 +85,8 @@ export class RequestResolver {
   }
 
   @Query(() => [Request], { name: 'allRequests' })
-  async findAll(): Promise<Request[]> {
-    return await this.RequestService.findAll();
+  async findAll(@Args() args: FetchAllRequestsArgs): Promise<Request[]> {
+    return await this.RequestService.findAll(args);
   }
 
   @Query(() => Request, { name: 'Request' })

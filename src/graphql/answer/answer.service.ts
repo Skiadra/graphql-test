@@ -5,6 +5,7 @@ import { Answer } from './entities/answer.entity';
 import { CreateAnswerInput } from './dto/create-answer.input';
 import { UpdateAnswerInput } from './dto/update-answer.input';
 import { DeleteAnswerInput } from './dto/delete-answer.input';
+import { FetchAllAnswersArgs } from './dto/fetch-all-answer.input';
 
 @Injectable()
 export class AnswerService {
@@ -57,8 +58,15 @@ export class AnswerService {
       return true;
     }
 
-  async findAll(): Promise<Answer[]> {
-    return await this.repo.find();
+  async findAll(args: FetchAllAnswersArgs): Promise<Answer[]> {
+    const page = args.page ?? 1;
+    const limit = args.limit ?? 5;
+
+    return await this.repo.find({
+      take: limit,
+      skip: (page - 1) * limit,
+      relations: this.allRelations,
+    });
   }
 
   async findOne(id: number): Promise<Answer | null> {
