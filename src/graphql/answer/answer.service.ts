@@ -83,8 +83,8 @@ export class AnswerService {
     });
   }
 
-  async findByRequestId(id: number): Promise<Answer | null> {
-    return await this.repo.findOneOrFail({
+  async findByRequestId(id: number): Promise<Answer[]> {
+    return await this.repo.find({
       where: { request: { id } },
       relations: this.allRelations,
     });
