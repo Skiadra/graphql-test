@@ -158,9 +158,11 @@ export class SeederService {
       },
     ];
 
-    for (const answerData of answers) {
-      const answer = this.answerRepository.create(answerData);
-      await this.answerRepository.save(answer);
+    for (let j = 0; j < 11; j++) {
+      for (const answerData of answers) {
+        const answer = this.answerRepository.create(answerData);
+        await this.answerRepository.save(answer);
+      }
     }
   }
 
