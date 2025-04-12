@@ -82,4 +82,11 @@ export class AnswerService {
       relations: this.allRelations,
     });
   }
+
+  async findByRequestId(id: number): Promise<Answer | null> {
+    return await this.repo.findOneOrFail({
+      where: { request: { id } },
+      relations: this.allRelations,
+    });
+  }
 }

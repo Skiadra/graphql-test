@@ -108,4 +108,14 @@ export class AnswerResolver {
 
     return answers;
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Answer], { name: 'requestAnswers' })
+  async getRequestAnswers(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Answer | null> {
+    const answer = await this.answerService.findByRequestId(id);
+
+    return answer;
+  }
 }
