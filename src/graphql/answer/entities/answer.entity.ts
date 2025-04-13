@@ -24,6 +24,7 @@ export class Answer {
   @Field()
   attachment?: string;
 
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user.answers, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
