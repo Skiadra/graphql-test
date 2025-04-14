@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, Context, ResolveField } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context, ResolveField, Parent } from '@nestjs/graphql';
 import { RequestService } from './request.service';
 import { CreateRequestInput } from './dto/create-request.input';
 import { Request } from './entities/request.entity';
@@ -106,15 +106,20 @@ export class RequestResolver {
 
     return requests;
   }
-
+  
+  @UseGuards(GqlAuthGuard)
   @ResolveField(() => Boolean)
-  @UseGuards(GqlAuthGuard, RolesGuard)
   async isAnswered(
     @Context() context: { req: AuthRequest },
-    @Args('id', { type: () => Int }) id: number,
+    @Parent() request: Request,
   ): Promise<boolean> {
     const userId = context.req.user.userId; // From JWT/auth
-    const answers = await this.RequestService.getAnswers(id);
+    // const answers = await this.RequestService.getAnswers(request.id);
+    const answers = request.answers;
+
+    if (!answers) {
+      return false;
+    }
 
     const hasAnswered = answers.some(answer => answer.user.id === userId);
 
