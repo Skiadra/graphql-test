@@ -41,9 +41,6 @@ export class Request {
   @Column()
   status: string;
 
-  @Field(() => Boolean)
-  isAnswered: boolean;
-
   // Many requests can be made by one requestor
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.requests, {
