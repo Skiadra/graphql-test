@@ -25,7 +25,10 @@ export class Answer {
   attachment?: string;
 
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.answers, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.answers, { 
+    onDelete: 'CASCADE',
+    eager: true,
+  })
   @JoinColumn({ name: 'userId' })
   user: User;
 

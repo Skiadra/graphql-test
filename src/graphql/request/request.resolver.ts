@@ -89,7 +89,7 @@ export class RequestResolver {
     return await this.RequestService.findAll(args);
   }
 
-  @Query(() => Request, { name: 'Request' })
+  @Query(() => Request, { name: 'findRequest' })
   async findOne(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Request | null> {
@@ -107,25 +107,21 @@ export class RequestResolver {
     return requests;
   }
   
+  // @ResolveField(() => Boolean)
+  @Query(() => Boolean, { name: 'hasAnswered' })
   @UseGuards(GqlAuthGuard)
-  @ResolveField(() => Boolean)
   async isAnswered(
     @Context() context: { req: AuthRequest },
-    @Parent() request: Request,
+    @Args('id', { type: () => Int }) id: number,
   ): Promise<boolean> {
-    const userId = context.req.user.userId; // From JWT/auth
-    // const answers = await this.RequestService.getAnswers(request.id);
-    const answers = request.answers;
+    const userId = context.req.user.userId;
 
+    const answers = await this.RequestService.getAnswers(id);
     if (!answers) {
       return false;
     }
 
     const hasAnswered = answers.some(answer => answer.user.id === userId);
-
-    console.log(answers);
-    console.log(hasAnswered)
-
     return hasAnswered;
   }
 }
