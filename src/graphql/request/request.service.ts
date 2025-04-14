@@ -6,6 +6,7 @@ import { Request } from './entities/request.entity';
 import { UpdateRequestInput } from './dto/update-request.input';
 import { DeleteRequestInput } from './dto/delete-request.input';
 import { FetchAllRequestsArgs } from './dto/fetch-all-request.input';
+import { Answer } from '../answer/entities/answer.entity';
 
 @Injectable()
 export class RequestService {
@@ -82,5 +83,22 @@ export class RequestService {
       where: { requestor: { id } },
       relations: this.allRelations,
     });
+  }
+
+  async getAnswers(id: number): Promise<Answer[]> {
+    const request  = await this.repo.findOne({
+      where: { 
+        id
+      },
+      relations: this.allRelations,
+    });
+
+    if (!request) {
+      throw new Error('No Such Request Found');
+    }
+
+    const answer = request.answers ? request.answers : [];
+
+    return answer;
   }
 }

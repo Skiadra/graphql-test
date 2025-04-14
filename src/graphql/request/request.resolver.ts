@@ -106,4 +106,21 @@ export class RequestResolver {
 
     return requests;
   }
+
+  @UseGuards(GqlAuthGuard, RolesGuard)
+  @Query(() => Boolean, { name: 'isAnswered' })
+  async isAnswered(
+    @Context() context: { req: AuthRequest },
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Boolean> {
+    const userId = context.req.user.userId; // From JWT/auth
+    const answers = await this.RequestService.getAnswers(id);
+
+    const hasAnswered = answers.some(answer => answer.user.id === userId);
+
+    console.log(answers);
+    console.log(hasAnswered)
+
+    return hasAnswered;
+  }
 }
