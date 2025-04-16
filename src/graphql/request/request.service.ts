@@ -5,7 +5,7 @@ import { CreateRequestInput } from './dto/create-request.input';
 import { Request } from './entities/request.entity';
 import { UpdateRequestInput } from './dto/update-request.input';
 import { DeleteRequestInput } from './dto/delete-request.input';
-import { FetchAllRequestsArgs } from './dto/fetch-all-request.input';
+import { PaginationArgs } from './dto/fetch-all-request.input';
 import { Answer } from '../answer/entities/answer.entity';
 
 @Injectable()
@@ -60,7 +60,7 @@ export class RequestService {
     return true;
   }
 
-  async findAll(args: FetchAllRequestsArgs): Promise<Request[]> {
+  async findAll(args: PaginationArgs): Promise<Request[]> {
     const offset = args.offset ?? 0;
     const limit = args.limit ?? 5;
 
@@ -78,9 +78,14 @@ export class RequestService {
     });
   }
 
-  async findByUserId(id: number): Promise<Request[]> {
+  async findByUserId(id: number, args: PaginationArgs): Promise<Request[]> {
+    const offset = args.offset ?? 0;
+    const limit = args.limit ?? 5;
+
     return await this.repo.find({
       where: { requestor: { id } },
+      take: limit,
+      skip: offset,
       relations: this.allRelations,
     });
   }

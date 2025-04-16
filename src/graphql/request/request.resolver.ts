@@ -11,7 +11,7 @@ import { UserRole } from '@enum/user-role.enum';
 import { UpdateRequestInput } from './dto/update-request.input';
 import { DeleteRequestInput } from './dto/delete-request.input';
 import { DefaultResponse} from 'src/common/default.response';
-import { FetchAllRequestsArgs } from './dto/fetch-all-request.input';
+import { PaginationArgs } from './dto/fetch-all-request.input';
 
 @Resolver(() => Request)
 export class RequestResolver {
@@ -85,7 +85,7 @@ export class RequestResolver {
   }
 
   @Query(() => [Request], { name: 'allRequests' })
-  async findAll(@Args() args: FetchAllRequestsArgs): Promise<Request[]> {
+  async findAll(@Args() args: PaginationArgs): Promise<Request[]> {
     return await this.RequestService.findAll(args);
   }
 
@@ -100,9 +100,10 @@ export class RequestResolver {
   @Query(() => [Request], { name: 'myRequests' })
   async getMyRequest(
     @Context() context: { req: AuthRequest },
+    @Args() args: PaginationArgs
   ): Promise<Request[]> {
     const userId = context.req.user.userId; // From JWT/auth
-    const requests = await this.RequestService.findByUserId(userId);
+    const requests = await this.RequestService.findByUserId(userId, args);
 
     return requests;
   }
