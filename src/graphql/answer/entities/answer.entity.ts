@@ -32,7 +32,7 @@ export class Answer {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @Field(() => User)
+  @Field(() => Request)
   @ManyToOne(() => Request, (request) => request.answers, {
     onDelete: 'CASCADE',
     eager: true,
