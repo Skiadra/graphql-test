@@ -11,7 +11,7 @@ import { AuthRequest } from '../user/auth/interface/auth-request.interface';
 import { UpdateAnswerInput } from './dto/update-answer.input';
 import { DeleteAnswerInput } from './dto/delete-answer.input';
 import { DefaultResponse } from 'src/common/default.response';
-import { FetchAllAnswersArgs } from './dto/fetch-all-answer.input';
+import { PaginationArgs } from './dto/fetch-all-answer.input';
 
 @Resolver(() => Answer)
 export class AnswerResolver {
@@ -87,7 +87,7 @@ export class AnswerResolver {
   }
 
   @Query(() => [Answer], { name: 'allAnswers' })
-  async findAll(@Args() args: FetchAllAnswersArgs): Promise<Answer[]> {
+  async findAll(@Args() args: PaginationArgs): Promise<Answer[]> {
     return await this.answerService.findAll(args);
   }
 
@@ -102,9 +102,10 @@ export class AnswerResolver {
   @Query(() => [Answer], { name: 'myAnswers' })
   async getMyAnswers(
     @Context() context: { req: AuthRequest },
+    @Args() args: PaginationArgs,
   ): Promise<Answer[]> {
     const userId = context.req.user.userId; // From JWT/auth
-    const answers = await this.answerService.findByUserId(userId);
+    const answers = await this.answerService.findByUserId(userId, args);
 
     return answers;
   }
