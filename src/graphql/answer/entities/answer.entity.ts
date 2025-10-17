@@ -9,7 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('answers')
 @ObjectType()
 export class Answer {
   @Field(() => ID)
@@ -24,10 +24,15 @@ export class Answer {
   @Field()
   attachment?: string;
 
-  @ManyToOne(() => User, (user) => user.answers, { onDelete: 'CASCADE' })
+  @Field(() => User)
+  @ManyToOne(() => User, (user) => user.answers, { 
+    onDelete: 'CASCADE',
+    eager: true,
+  })
   @JoinColumn({ name: 'userId' })
   user: User;
 
+  @Field(() => Request)
   @ManyToOne(() => Request, (request) => request.answers, {
     onDelete: 'CASCADE',
     eager: true,

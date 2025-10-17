@@ -29,17 +29,25 @@ jobs:
           cd ${{ secrets.VPS_DEPLOY_PATH }} || { echo "Project folder not found!"; exit 1; }
 
           # Pull the latest code
-          git pull origin main
+          git reset --hard HEAD
+          git clean -fd
+          git pull origin dev
 
           # Create the .env file from GitHub Secret
-          echo "${{ secrets.ENV_FILE }}" > .env
+          echo "${{ secrets.ENV }}" > .env
           chmod 600 .env  # Secure the .env file
 
           # Install dependencies
           npm install
 
+          # Apply patches
+          npm run postinstall
+
           # Build the application
           npm run build
+
+          # Seed database
+          npm run seed
 
           # Restart the application using PM2
           pm2 restart graphql-test || pm2 start dist/main.js --name graphql-test
@@ -49,3 +57,4 @@ jobs:
 
           echo "Deployment completed successfully!"
           EOF
+          

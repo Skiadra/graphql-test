@@ -12,7 +12,7 @@ config();
   imports: [
     TypeOrmModule.forRoot({
       type: process.env.DATABASE_TYPE as 'mysql',
-      host: process.env.DATABASE_HOST || 'localhost',
+      host: process.env.DATABASE_HOST || '127.0.0.1',
       port: parseInt(process.env.DATABASE_PORT ?? '3306'),
       username: process.env.DATABASE_USER || 'root',
       password: process.env.DATABASE_PASSWORD || '12345678',

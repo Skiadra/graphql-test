@@ -5,6 +5,7 @@ import { Answer } from './entities/answer.entity';
 import { CreateAnswerInput } from './dto/create-answer.input';
 import { UpdateAnswerInput } from './dto/update-answer.input';
 import { DeleteAnswerInput } from './dto/delete-answer.input';
+import { PaginationArgs } from './dto/fetch-all-answer.input';
 
 @Injectable()
 export class AnswerService {
@@ -57,13 +58,39 @@ export class AnswerService {
       return true;
     }
 
-  async findAll(): Promise<Answer[]> {
-    return await this.repo.find();
+  async findAll(args: PaginationArgs): Promise<Answer[]> {
+    const offset = args.offset ?? 0;
+    const limit = args.limit ?? 5;
+
+    return await this.repo.find({
+      take: limit,
+      skip: offset,
+      relations: this.allRelations,
+    });
   }
 
   async findOne(id: number): Promise<Answer | null> {
     return await this.repo.findOne({
       where: { id },
+      relations: this.allRelations,
+    });
+  }
+
+  async findByUserId(id: number, args: PaginationArgs): Promise<Answer[]> {
+    const offset = args.offset ?? 0;
+    const limit = args.limit ?? 5;
+
+    return await this.repo.find({
+      where: { user: { id } },
+      take: limit,
+      skip: offset,
+      relations: this.allRelations,
+    });
+  }
+
+  async findByRequestId(id: number): Promise<Answer[]> {
+    return await this.repo.find({
+      where: { request: { id } },
       relations: this.allRelations,
     });
   }

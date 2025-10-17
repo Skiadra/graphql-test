@@ -60,34 +60,4 @@ export class UserResolver {
   async findAllByRole(@Args() args: FetchAllUsersByRoleArgs): Promise<User[]> {
     return await this.userService.findAllByRole(args);
   }
-
-  @UseGuards(GqlAuthGuard)
-  @Query(() => [Request], { name: 'myRequests' })
-  async getMyRequest(
-    @Context() context: { req: AuthRequest },
-  ): Promise<Request[]> {
-    const userId = context.req.user.userId; // From JWT/auth
-    const user = await this.userService.findOne(userId);
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    return user.requests;
-  }
-
-  @UseGuards(GqlAuthGuard)
-  @Query(() => [Answer], { name: 'myAnswers' })
-  async getMyAnswers(
-    @Context() context: { req: AuthRequest },
-  ): Promise<Answer[]> {
-    const userId = context.req.user.userId; // From JWT/auth
-    const user = await this.userService.findOne(userId);
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    return user.answers;
-  }
 }

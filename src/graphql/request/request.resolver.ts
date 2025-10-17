@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context, ResolveField, Parent } from '@nestjs/graphql';
 import { RequestService } from './request.service';
 import { CreateRequestInput } from './dto/create-request.input';
 import { Request } from './entities/request.entity';
@@ -11,6 +11,7 @@ import { UserRole } from '@enum/user-role.enum';
 import { UpdateRequestInput } from './dto/update-request.input';
 import { DeleteRequestInput } from './dto/delete-request.input';
 import { DefaultResponse} from 'src/common/default.response';
+import { PaginationArgs } from './dto/fetch-all-request.input';
 
 @Resolver(() => Request)
 export class RequestResolver {
@@ -84,14 +85,44 @@ export class RequestResolver {
   }
 
   @Query(() => [Request], { name: 'allRequests' })
-  async findAll(): Promise<Request[]> {
-    return await this.RequestService.findAll();
+  async findAll(@Args() args: PaginationArgs): Promise<Request[]> {
+    return await this.RequestService.findAll(args);
   }
 
-  @Query(() => Request, { name: 'Request' })
+  @Query(() => Request, { name: 'findRequest' })
   async findOne(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Request | null> {
     return await this.RequestService.findOne(id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Request], { name: 'myRequests' })
+  async getMyRequest(
+    @Context() context: { req: AuthRequest },
+    @Args() args: PaginationArgs
+  ): Promise<Request[]> {
+    const userId = context.req.user.userId; // From JWT/auth
+    const requests = await this.RequestService.findByUserId(userId, args);
+
+    return requests;
+  }
+  
+  // @ResolveField(() => Boolean)
+  @Query(() => Boolean, { name: 'hasAnswered' })
+  @UseGuards(GqlAuthGuard)
+  async isAnswered(
+    @Context() context: { req: AuthRequest },
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<boolean> {
+    const userId = context.req.user.userId;
+
+    const answers = await this.RequestService.getAnswers(id);
+    if (!answers) {
+      return false;
+    }
+
+    const hasAnswered = answers.some(answer => answer.user.id === userId);
+    return hasAnswered;
   }
 }

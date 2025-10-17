@@ -2,9 +2,6 @@ import { InputType, Field, ID, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateAnswerInput {
-  @Field(() => Int)
-  id: number;
-
   @Field()
   description: string;
 

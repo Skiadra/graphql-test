@@ -11,6 +11,7 @@ import { AuthRequest } from '../user/auth/interface/auth-request.interface';
 import { UpdateAnswerInput } from './dto/update-answer.input';
 import { DeleteAnswerInput } from './dto/delete-answer.input';
 import { DefaultResponse } from 'src/common/default.response';
+import { PaginationArgs } from './dto/fetch-all-answer.input';
 
 @Resolver(() => Answer)
 export class AnswerResolver {
@@ -86,8 +87,8 @@ export class AnswerResolver {
   }
 
   @Query(() => [Answer], { name: 'allAnswers' })
-  async findAll(): Promise<Answer[]> {
-    return await this.answerService.findAll();
+  async findAll(@Args() args: PaginationArgs): Promise<Answer[]> {
+    return await this.answerService.findAll(args);
   }
 
   @Query(() => Answer, { name: 'answer' })
@@ -95,5 +96,27 @@ export class AnswerResolver {
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Answer | null> {
     return await this.answerService.findOne(id);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Answer], { name: 'myAnswers' })
+  async getMyAnswers(
+    @Context() context: { req: AuthRequest },
+    @Args() args: PaginationArgs,
+  ): Promise<Answer[]> {
+    const userId = context.req.user.userId; // From JWT/auth
+    const answers = await this.answerService.findByUserId(userId, args);
+
+    return answers;
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Answer], { name: 'requestAnswers' })
+  async getRequestAnswers(
+    @Args('id', { type: () => Int }) id: number,
+  ): Promise<Answer[]> {
+    const answers = await this.answerService.findByRequestId(id);
+
+    return answers;
   }
 }

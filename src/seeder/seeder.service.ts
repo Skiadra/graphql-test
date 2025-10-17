@@ -22,7 +22,7 @@ export class SeederService {
     try {
       await this.clearDatabase();
       await this.seedUsers();
-      await this.seedRequests();
+      await this.seedMoreRequests();
       await this.seedAnswers();
       return { success: true, message: 'Database seeded successfully' };
     } catch (error) {
@@ -114,6 +114,7 @@ export class SeederService {
         assignment: 'Physics Assignment',
         faculty: 'Science',
         studyProgram: 'Physics',
+        lecturer: 'Dr. Smith',
         status: 'Completed',
         requestor: users.find((u) => u.username === 'student2'),
         requested: joki,
@@ -144,7 +145,8 @@ export class SeederService {
       },
       {
         description: 'I need more information about the project requirements.',
-        user: requests[1].requestor,
+        attachment: 'test.pdf',
+        user: joki,
         request: requests[1],
       },
       {
@@ -156,9 +158,54 @@ export class SeederService {
       },
     ];
 
-    for (const answerData of answers) {
-      const answer = this.answerRepository.create(answerData);
-      await this.answerRepository.save(answer);
+    for (let j = 0; j < 11; j++) {
+      for (const answerData of answers) {
+        const answer = this.answerRepository.create(answerData);
+        await this.answerRepository.save(answer);
+      }
+    }
+  }
+
+  private async seedMoreRequests() {
+    const users = await this.userRepository.find();
+    const student = users.find((u) => u.username === 'student1');
+    const joki = users.find((u) => u.role === UserRole.JOKI);
+
+    const requests = [
+      {
+        assignment: 'Math Homework',
+        faculty: 'Science',
+        studyProgram: 'Mathematics',
+        lecturer: 'Dr. Smith',
+        status: 'Pending',
+        requestor: student,
+        requested: joki,
+      },
+      {
+        assignment: 'Programming Project',
+        faculty: 'Computer Science',
+        studyProgram: 'Software Engineering',
+        lecturer: 'Prof. Johnson',
+        status: 'In Progress',
+        attachment: 'project_requirements.pdf',
+        requestor: student,
+      },
+      {
+        assignment: 'Physics Assignment',
+        faculty: 'Science',
+        studyProgram: 'Physics',
+        lecturer: 'Dr. Smith',
+        status: 'Completed',
+        requestor: users.find((u) => u.username === 'student2'),
+        requested: joki,
+      },
+    ];
+
+    for (let j = 0; j < 11; j++) {
+      for (const requestData of requests) {
+        const request = this.requestRepository.create(requestData);
+        await this.requestRepository.save(request);
+      }
     }
   }
 }

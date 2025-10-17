@@ -5,6 +5,8 @@ import { CreateRequestInput } from './dto/create-request.input';
 import { Request } from './entities/request.entity';
 import { UpdateRequestInput } from './dto/update-request.input';
 import { DeleteRequestInput } from './dto/delete-request.input';
+import { PaginationArgs } from './dto/fetch-all-request.input';
+import { Answer } from '../answer/entities/answer.entity';
 
 @Injectable()
 export class RequestService {
@@ -58,8 +60,15 @@ export class RequestService {
     return true;
   }
 
-  async findAll(): Promise<Request[]> {
-    return await this.repo.find();
+  async findAll(args: PaginationArgs): Promise<Request[]> {
+    const offset = args.offset ?? 0;
+    const limit = args.limit ?? 5;
+
+    return await this.repo.find({
+      take: limit,
+      skip: offset,
+      relations: this.allRelations,
+    });
   }
 
   async findOne(id: number): Promise<Request | null> {
@@ -67,5 +76,34 @@ export class RequestService {
       where: { id },
       relations: this.allRelations,
     });
+  }
+
+  async findByUserId(id: number, args: PaginationArgs): Promise<Request[]> {
+    const offset = args.offset ?? 0;
+    const limit = args.limit ?? 5;
+
+    return await this.repo.find({
+      where: { requestor: { id } },
+      take: limit,
+      skip: offset,
+      relations: this.allRelations,
+    });
+  }
+
+  async getAnswers(id: number): Promise<Answer[]> {
+    const request  = await this.repo.findOne({
+      where: { 
+        id
+      },
+      relations: this.allRelations,
+    });
+
+    if (!request) {
+      throw new Error('No Such Request Found');
+    }
+
+    const answer = request.answers ? request.answers : [];
+
+    return answer;
   }
 }
